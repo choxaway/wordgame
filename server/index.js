@@ -14,143 +14,269 @@ const PORT=process.env.PORT||3001;
 const io=new Server(server,{cors:{origin:CLIENT_URL,methods:['GET','POST']}});
 app.use(cors({origin:CLIENT_URL}));
 app.use(express.json());
-const users={};const usersByEmail={};const usersByUsername={};const rooms={};const socketToUser={};const userToSocket={};
-const WORDS=new Set(['able','about','above','acid','aged','also','amid','ante','arch','area','army','atom','aunt','auto','avid','away','back','bade','bail','bait','bale','ball','band','bane','bank','bare','bark','barn','base','bash','bask','bath','bead','beam','bean','bear','beat','beef','been','beer','bell','belt','bend','best','bind','bird','bite','blob','blow','blue','blur','boat','body','bold','bolt','bond','bone','book','bore','born','bowl','buck','bull','bump','burn','bush','busy','byte','cage','cake','call','calm','came','camp','cane','cape','card','care','cart','case','cash','cast','cave','cell','char','chat','chef','chew','chin','chip','chop','cite','city','clam','clap','clay','clip','club','clue','coal','coat','code','coil','cold','come','cone','cook','cool','cope','cord','core','corn','cost','cove','crew','crop','crow','cube','curb','cure','curl','cute','damp','dare','dark','dart','data','date','dawn','dead','deaf','deal','dean','dear','debt','deck','deed','deep','deft','dent','deny','desk','dice','diet','dire','dirt','disc','dish','disk','dive','dock','does','done','door','dose','dote','dove','down','draw','drip','drop','drum','dual','duel','dumb','dump','dune','dusk','dust','duty','each','earn','ease','east','easy','edge','edit','emit','epic','even','ever','evil','exam','face','fact','fair','fake','fall','fame','fare','farm','fast','fate','fawn','fear','feat','feed','feel','feet','fell','felt','fend','fern','file','fill','film','find','fine','fire','firm','fish','fist','flag','flat','flip','flow','foam','fold','folk','fond','font','food','fool','foot','ford','fore','fork','form','fort','foul','four','fowl','free','fuel','full','fume','fund','fuse','game','gang','gasp','gave','gear','gene','gift','girl','give','glad','glue','goal','gold','golf','gone','good','grew','grim','grin','grip','grit','grow','gulf','gust','hall','halt','hand','hang','hard','harm','harp','hash','haul','have','head','heal','heap','hear','heat','heel','held','helm','help','herd','here','hero','hide','high','hill','hint','hire','hold','hole','home','hood','hook','hope','horn','host','hour','huge','hull','hump','hunt','hurt','husk','icon','idea','idle','inch','into','iron','jack','jail','jest','join','joke','jolt','junk','jury','just','keen','keep','kick','kill','kind','king','knee','knew','knit','knob','know','lace','lack','laid','lake','land','lane','last','late','lawn','lead','leaf','lean','leap','left','lend','lens','less','lied','life','lift','like','limb','line','link','lion','list','live','load','loan','lock','loft','lone','long','look','loom','loop','lore','lose','loss','lost','love','luck','lull','lung','lurk','made','mail','main','make','male','mall','malt','many','mark','mast','maze','meal','mean','meat','meet','melt','memo','mere','mesh','mild','milk','mill','mind','mine','mint','mist','mock','mode','mold','moon','more','most','move','much','must','myth','nail','name','near','neat','need','nest','news','nice','nine','node','none','noon','norm','nose','note','noun','nude','null','once','only','open','oral','oven','over','owed','pack','page','paid','pain','pair','pale','palm','pane','park','part','past','path','pave','peak','peel','peer','pest','pine','pink','pipe','plan','plug','plus','poem','poet','poll','polo','pond','pool','poor','pore','port','pose','post','pour','prep','prey','prod','pull','pump','pure','push','race','rack','rage','raid','rail','rain','rake','ramp','rang','rank','rant','reap','reel','rein','rely','rent','rest','rice','rich','ride','ring','riot','rise','risk','road','roam','roar','robe','rock','rode','roll','roof','room','root','rose','rule','rush','rust','safe','sage','said','sail','sale','salt','same','sand','sang','sank','save','scan','scar','seal','seam','seat','seed','seek','seem','seen','seep','self','sell','send','sent','shed','ship','shoe','shop','shot','show','shut','sick','side','sigh','silk','sill','sine','sink','site','size','skin','skip','slam','slap','slim','slip','slot','slow','slug','snap','snow','soak','soar','sock','soil','sold','sole','some','song','soon','sore','sort','soul','soup','sour','span','spar','spin','spit','spot','spur','star','stay','stem','step','stew','stop','stub','stun','such','suit','sung','sunk','sure','swan','swap','sway','swim','tail','take','tale','tall','tank','tape','task','team','tear','teen','tell','tend','tent','term','test','text','than','that','them','then','they','thin','this','thus','tide','tied','tier','tile','till','time','tiny','tire','toad','told','toll','tomb','tone','took','tool','torn','toss','tour','town','trap','tree','trim','trip','trod','true','tube','tuck','tune','turf','turn','tusk','twin','type','ugly','undo','unit','upon','urge','used','user','vain','vale','vane','vary','vase','vast','veil','vein','verb','very','vest','vial','view','vine','void','vote','wade','wage','wake','walk','wall','wand','ward','warm','warp','wary','wave','weak','wear','weed','week','weld','well','went','were','west','what','when','whim','whip','whom','wide','wild','will','wilt','wind','wine','wing','wink','wire','wise','wish','with','woke','wolf','word','wore','work','worm','worn','wrap','wren','yawn','year','zero','zone','about','above','abuse','acute','adult','after','again','agent','agree','ahead','alarm','album','alert','alien','align','alike','alive','alley','allow','alone','along','alter','angel','anger','angle','angry','ankle','annex','annoy','apart','apple','apply','arena','argue','arise','arrow','asset','atlas','attic','audio','audit','avoid','awake','award','aware','awful','badge','badly','baker','basic','basis','batch','beach','began','begin','being','below','bench','bible','birth','black','blade','blame','bland','blank','blast','blaze','bleed','blend','bless','blind','block','blood','bloom','board','boost','booth','bound','boxer','brain','brake','brand','brave','bread','break','bride','brief','bring','broad','broke','brook','brown','brush','build','built','bunch','burst','buyer','cable','camel','canal','candy','cargo','carry','catch','cause','cease','chain','chair','chalk','chaos','charm','chase','cheap','check','cheek','cheer','chess','chest','chief','child','china','choir','chose','civic','civil','claim','clash','class','clean','clear','clerk','click','cliff','climb','cling','clock','clone','close','cloth','cloud','coach','coast','color','comic','comma','coral','count','court','cover','crack','craft','crash','crazy','cream','creek','crime','cross','crowd','crown','cruel','crush','curve','cycle','daily','dairy','dance','death','debut','decoy','delay','delta','depot','depth','derby','devil','dirty','dizzy','dodge','doubt','dough','draft','drain','drama','drank','drawn','dream','dress','drift','drink','drive','drove','dying','eager','eagle','early','earth','eight','elite','email','empty','enemy','enjoy','enter','entry','equal','error','essay','event','every','exact','exist','extra','fable','faith','false','fancy','fatal','fault','feast','fence','ferry','fetch','fever','field','fifth','fifty','fight','final','first','fixed','flame','flash','flesh','float','flock','floor','flour','fluid','flush','focal','focus','force','forge','forth','forum','found','frame','frank','fraud','fresh','front','frost','fruit','fully','funny','ghost','giant','given','glass','globe','gloom','gloss','grace','grade','grain','grand','grant','grape','grasp','grass','grave','great','green','greet','grief','groan','gross','group','grove','guard','guess','guest','guide','guild','guile','guise','gusto','habit','happy','harsh','haven','heart','heavy','hence','herbs','hinge','hobby','holly','hotel','house','human','humor','hurry','image','imply','inbox','index','inner','input','issue','ivory','japan','jewel','joint','judge','juice','juicy','karma','knife','knock','known','label','large','laser','later','laugh','layer','learn','lease','legal','level','light','limit','linen','liner','liver','local','lodge','logic','loose','lover','lower','lucid','lunar','lying','magic','major','maker','march','match','mayor','media','medic','mercy','merit','metal','model','money','month','moral','motor','mount','mouse','mouth','movie','music','night','noble','noise','north','novel','nurse','nylon','occur','ocean','offer','often','orbit','order','other','outer','owner','oxide','ozone','paint','panel','panic','paper','party','pause','peace','pearl','penny','phase','phone','photo','piano','piece','pilot','pitch','pixel','pizza','place','plain','plane','plant','plate','plaza','plead','pluck','plumb','plume','point','polar','power','press','price','pride','prime','print','prior','prize','probe','prone','proof','prose','proud','prove','prowl','pulse','pupil','queen','query','quest','queue','quick','quiet','quota','quote','radar','radio','raise','rally','range','rapid','ratio','reach','react','realm','rebel','refer','relax','repay','repel','reply','rider','ridge','rifle','right','risky','rival','river','robot','robin','rouge','rough','round','route','royal','rugby','ruler','rural','sadly','saint','sauce','scale','scene','scope','score','scout','sense','serve','setup','seven','shade','shake','shall','shame','shape','share','shark','sharp','sheer','sheet','shelf','shell','shift','shore','short','shout','sight','since','sixth','sixty','skill','skull','slate','slave','sleek','sleep','sleet','slick','slide','slope','small','smart','smell','smile','smoke','snake','solar','solid','solve','sorry','sound','south','space','spare','speak','spear','speed','spell','spend','spice','spike','spine','spite','split','spoke','spoon','spore','spray','squad','stack','staff','stage','stain','stake','stale','stall','stamp','stand','stare','stark','start','state','steak','steal','steel','steep','steer','stick','stiff','still','stock','stone','stood','store','storm','story','stove','strap','straw','stray','strip','strut','study','stuff','style','sugar','suite','sunny','super','surge','sweet','swept','swift','sword','swore','sworn','table','taste','teach','teeth','tempo','tense','terms','thick','third','thorn','three','threw','throw','thumb','tiger','tight','timer','tired','title','today','token','topic','total','touch','tough','towel','tower','track','trade','trail','train','trait','trash','treat','trend','trial','tribe','trick','tried','troop','trove','truck','truly','trump','trunk','trust','truth','tumor','tuner','ultra','uncle','under','union','until','upper','upset','urban','usual','utter','valid','value','video','vigor','viral','virus','visit','vista','vital','vivid','vocal','voice','waste','watch','water','weary','weave','wedge','weird','whale','wheat','wheel','where','while','white','whole','whose','wider','witch','woman','women','world','worry','worse','worst','worth','would','wound','wrist','write','wrote','yacht','yield','young','youth','strange','strong','stream','street','string','stripe','strategy','straight','struggle','stretch','strength','structure','straight','stranger','strongly','stripped','stressed','strictly','striking','striving','studying','stumbled','stunning','stupidly','subjects','suddenly','suffered','suitable','supplies','supposed','sweeping','symbolic']);
-function isValidWord(w){return w.length>=3&&WORDS.has(w.toLowerCase());}
-function canExtend(prefix){const l=prefix.toLowerCase();for(const w of WORDS){if(w.startsWith(l)&&w.length>l.length)return true;}return false;}
-function getDefinition(w){const defs={'stop':'verb — to cease moving.','strip':'noun/verb — a narrow piece; to remove.','straw':'noun — dried stalks; a drinking tube.','strong':'adjective — having great power.','strange':'adjective — unusual or surprising.','street':'noun — a public road in a town.','stream':'noun — a small narrow river.','strategy':'noun — a plan to achieve a long-term aim.','string':'noun — a length of thread or cord.','stripe':'noun — a band of colour.'};return defs[w]||(WORDS.has(w)?`"${w}" is a valid English word.`:null);}
-function authMiddleware(req,res,next){const token=req.headers.authorization?.split(' ')[1];if(!token)return res.status(401).json({error:'No token'});try{req.user=jwt.verify(token,JWT_SECRET);next();}catch{res.status(401).json({error:'Invalid token'});}}
-app.post('/auth/register',async(req,res)=>{const{username,email,password}=req.body;if(!username||!email||!password)return res.status(400).json({error:'All fields required'});if(usersByEmail[email.toLowerCase()])return res.status(400).json({error:'Email already registered'});if(usersByUsername[username.toLowerCase()])return res.status(400).json({error:'Username taken'});if(username.length<2||username.length>20)return res.status(400).json({error:'Username must be 2-20 characters'});const id=uuidv4();const passwordHash=await bcrypt.hash(password,10);const user={id,username,email:email.toLowerCase(),passwordHash,elo:1000,wins:0,losses:0,gamesPlayed:0};users[id]=user;usersByEmail[email.toLowerCase()]=id;usersByUsername[username.toLowerCase()]=id;const token=jwt.sign({id,username},JWT_SECRET,{expiresIn:'7d'});res.json({token,user:{id,username,email:user.email,elo:1000,wins:0,losses:0}});});
-app.post('/auth/login',async(req,res)=>{const{email,password}=req.body;const userId=usersByEmail[email?.toLowerCase()];const user=users[userId];if(!user)return res.status(401).json({error:'Invalid email or password'});const valid=await bcrypt.compare(password,user.passwordHash);if(!valid)return res.status(401).json({error:'Invalid email or password'});const token=jwt.sign({id:user.id,username:user.username},JWT_SECRET,{expiresIn:'7d'});res.json({token,user:{id:user.id,username:user.username,email:user.email,elo:user.elo,wins:user.wins,losses:user.losses}});});
-app.get('/auth/me',authMiddleware,(req,res)=>{const user=users[req.user.id];if(!user)return res.status(404).json({error:'User not found'});res.json({id:user.id,username:user.username,email:user.email,elo:user.elo,wins:user.wins,losses:user.losses,gamesPlayed:user.gamesPlayed});});
-app.post('/rooms/create',authMiddleware,(req,res)=>{const code=Math.random().toString(36).substring(2,8).toUpperCase();rooms[code]={code,hostId:req.user.id,players:[],status:'lobby',chain:[],currentPlayerIndex:0,roundNumber:1,challengeActive:false,challengerId:null,challengedId:null};res.json({code});});
-app.get('/rooms/:code',authMiddleware,(req,res)=>{const room=rooms[req.params.code.toUpperCase()];if(!room)return res.status(404).json({error:'Room not found'});res.json(sanitiseRoom(room));});
-app.get('/dictionary',authMiddleware,(req,res)=>{const word=req.query.word?.toLowerCase();if(!word)return res.status(400).json({error:'No word provided'});const valid=isValidWord(word);const definition=getDefinition(word);res.json({word,valid,definition:definition||(valid?`"${word}" is valid.`:`"${word}" not found.`)});});
-app.get('/leaderboard',authMiddleware,(req,res)=>{const sorted=Object.values(users).sort((a,b)=>b.elo-a.elo).slice(0,50).map((u,i)=>({rank:i+1,username:u.username,elo:u.elo,wins:u.wins,losses:u.losses,gamesPlayed:u.gamesPlayed}));res.json(sorted);});
+const users={},usersByEmail={},usersByUsername={},rooms={},userToSocket={},queue=[];
+const W=new Set('able,acid,aged,also,area,army,atom,away,back,bail,bale,ball,band,bane,bank,bare,bark,barn,base,bash,bath,bead,beam,bean,bear,beat,beef,been,beer,bell,belt,bend,best,bind,bird,bite,blow,blue,blur,boat,body,bold,bolt,bond,bone,book,bore,born,bowl,buck,bull,bump,burn,bush,busy,cage,cake,call,calm,came,camp,cane,cape,card,care,cart,case,cash,cast,cave,cell,char,chat,chef,chew,chin,chip,chop,cite,city,clam,clap,clay,clip,club,clue,coal,coat,code,coil,cold,come,cone,cook,cool,cope,cord,core,corn,cost,cove,crew,crop,crow,cube,curb,cure,curl,cute,damp,dare,dark,dart,data,date,dawn,dead,deaf,deal,dean,dear,debt,deck,deed,deep,deft,dent,deny,desk,dice,diet,dire,dirt,disc,dish,disk,dive,dock,done,door,dose,dove,down,draw,drip,drop,drum,dual,duel,dumb,dump,dune,dusk,dust,duty,each,earn,ease,east,easy,edge,edit,emit,epic,even,ever,evil,exam,face,fact,fair,fake,fall,fame,fare,farm,fast,fate,fear,feat,feed,feel,feet,fell,felt,fend,fern,file,fill,film,find,fine,fire,firm,fish,fist,flag,flat,flip,flow,foam,fold,folk,fond,font,food,fool,foot,ford,fore,fork,form,fort,foul,four,fowl,free,fuel,full,fume,fund,fuse,game,gang,gave,gear,gene,gift,girl,give,glad,glue,goal,gold,golf,gone,good,grew,grim,grin,grip,grit,grow,gulf,gust,hall,halt,hand,hang,hard,harm,harp,hash,haul,have,head,heal,heap,hear,heat,heel,held,helm,help,herd,here,hero,hide,high,hill,hint,hire,hold,hole,home,hood,hook,hope,horn,host,hour,huge,hull,hump,hunt,hurt,husk,icon,idea,idle,inch,into,iron,jack,jail,jest,join,joke,jolt,junk,jury,just,keen,keep,kick,kill,kind,king,knee,knew,knit,knob,know,lace,lack,laid,lake,land,lane,last,late,lawn,lead,leaf,lean,leap,left,lend,lens,less,lied,life,lift,like,limb,line,link,lion,list,live,load,loan,lock,loft,lone,long,look,loom,loop,lore,lose,loss,lost,love,luck,lull,lung,lurk,made,mail,main,make,male,mall,malt,many,mark,mast,maze,meal,mean,meat,meet,melt,memo,mere,mesh,mild,milk,mill,mind,mine,mint,mist,mock,mode,mold,moon,more,most,move,much,must,myth,nail,name,near,neat,need,nest,news,nice,nine,node,none,noon,norm,nose,note,noun,nude,null,once,only,open,oral,oven,over,owed,pack,page,paid,pain,pair,pale,palm,pane,park,part,past,path,pave,peak,peel,peer,pest,pine,pink,pipe,plan,plug,plus,poem,poet,poll,polo,pond,pool,poor,pore,port,pose,post,pour,prep,prey,prod,pull,pump,pure,push,race,rack,rage,raid,rail,rain,rake,ramp,rang,rank,rant,reap,reel,rein,rely,rent,rest,rice,rich,ride,ring,riot,rise,risk,road,roam,roar,robe,rock,rode,roll,roof,room,root,rose,rule,rush,rust,safe,sage,said,sail,sale,salt,same,sand,sang,sank,save,scan,scar,seal,seam,seat,seed,seek,seem,seen,seep,self,sell,send,sent,shed,ship,shoe,shop,shot,show,shut,sick,side,sigh,silk,sill,sine,sink,site,size,skin,skip,slam,slap,slim,slip,slot,slow,slug,snap,snow,soak,soar,sock,soil,sold,sole,some,song,soon,sore,sort,soul,soup,sour,span,spar,spin,spit,spot,spur,star,stay,stem,step,stew,stop,stub,stun,such,suit,sung,sunk,sure,swan,swap,sway,swim,tail,take,tale,tall,tank,tape,task,team,tear,teen,tell,tend,tent,term,test,text,than,that,them,then,they,thin,this,thus,tide,tied,tier,tile,till,time,tiny,tire,toad,told,toll,tomb,tone,took,tool,torn,toss,tour,town,trap,tree,trim,trip,trod,true,tube,tuck,tune,turf,turn,tusk,twin,type,ugly,undo,unit,upon,urge,used,user,vain,vale,vane,vary,vase,vast,veil,vein,verb,very,vest,vial,view,vine,void,vote,wade,wage,wake,walk,wall,wand,ward,warm,warp,wary,wave,weak,wear,weed,week,weld,well,went,were,west,what,when,whim,whip,whom,wide,wild,will,wilt,wind,wine,wing,wink,wire,wise,wish,with,woke,wolf,word,wore,work,worm,worn,wrap,wren,yawn,year,zero,zone,about,above,abuse,acute,adult,after,again,agent,agree,ahead,alarm,album,alert,alien,align,alike,alive,alley,allow,alone,along,alter,angel,anger,angle,angry,ankle,annex,annoy,apart,apple,apply,arena,argue,arise,arrow,asset,atlas,attic,audio,audit,avoid,awake,award,aware,awful,badge,badly,baker,basic,basis,batch,beach,began,begin,being,below,bench,bible,birth,black,blade,blame,bland,blank,blast,blaze,bleed,blend,bless,blind,block,blood,bloom,board,boost,booth,bound,boxer,brain,brake,brand,brave,bread,break,bride,brief,bring,broad,broke,brook,brown,brush,build,built,bunch,burst,buyer,cable,camel,canal,candy,cargo,carry,catch,cause,cease,chain,chair,chalk,chaos,charm,chase,cheap,check,cheek,cheer,chess,chest,chief,child,china,choir,chose,civic,civil,claim,clash,class,clean,clear,clerk,click,cliff,climb,cling,clock,clone,close,cloth,cloud,coach,coast,color,comic,comma,coral,count,court,cover,crack,craft,crash,crazy,cream,creek,crime,cross,crowd,crown,cruel,crush,curve,cycle,daily,dairy,dance,death,debut,decoy,delay,delta,depot,depth,derby,devil,dirty,dizzy,dodge,doubt,dough,draft,drain,drama,drank,drawn,dream,dress,drift,drink,drive,drove,dying,eager,eagle,early,earth,eight,elite,email,empty,enemy,enjoy,enter,entry,equal,error,essay,event,every,exact,exist,extra,fable,faith,false,fancy,fatal,fault,feast,fence,ferry,fetch,fever,field,fifth,fifty,fight,final,first,fixed,flame,flash,flesh,float,flock,floor,flour,fluid,flush,focal,focus,force,forge,forth,forum,found,frame,frank,fraud,fresh,front,frost,fruit,fully,funny,ghost,giant,given,glass,globe,gloom,gloss,grace,grade,grain,grand,grant,grape,grasp,grass,grave,great,green,greet,grief,groan,gross,group,grove,guard,guess,guest,guide,guild,guile,guise,gusto,habit,happy,harsh,haven,heart,heavy,hence,herbs,hinge,hobby,holly,hotel,house,human,humor,hurry,image,imply,inbox,index,inner,input,issue,ivory,japan,jewel,joint,judge,juice,juicy,karma,knife,knock,known,label,large,laser,later,laugh,layer,learn,lease,legal,level,light,limit,linen,liner,liver,local,lodge,logic,loose,lover,lower,lucid,lunar,lying,magic,major,maker,march,match,mayor,media,medic,mercy,merit,metal,model,money,month,moral,motor,mount,mouse,mouth,movie,music,night,noble,noise,north,novel,nurse,nylon,occur,ocean,offer,often,orbit,order,other,outer,owner,oxide,ozone,paint,panel,panic,paper,party,pause,peace,pearl,penny,phase,phone,photo,piano,piece,pilot,pitch,pixel,pizza,place,plain,plane,plant,plate,plaza,plead,pluck,plumb,plume,point,polar,power,press,price,pride,prime,print,prior,prize,probe,prone,proof,prose,proud,prove,prowl,pulse,pupil,queen,query,quest,queue,quick,quiet,quota,quote,radar,radio,raise,rally,range,rapid,ratio,reach,react,realm,rebel,refer,relax,repay,repel,reply,rider,ridge,rifle,right,risky,rival,river,robot,robin,rouge,rough,round,route,royal,rugby,ruler,rural,sadly,saint,sauce,scale,scene,scope,score,scout,sense,serve,setup,seven,shade,shake,shall,shame,shape,share,shark,sharp,sheer,sheet,shelf,shell,shift,shore,short,shout,sight,since,sixth,sixty,skill,skull,slate,slave,sleek,sleep,sleet,slick,slide,slope,small,smart,smell,smile,smoke,snake,solar,solid,solve,sorry,sound,south,space,spare,speak,spear,speed,spell,spend,spice,spike,spine,spite,split,spoke,spoon,spore,spray,squad,stack,staff,stage,stain,stake,stale,stall,stamp,stand,stare,stark,start,state,steak,steal,steel,steep,steer,stick,stiff,still,stock,stone,stood,store,storm,story,stove,strap,straw,stray,strip,strut,study,stuff,style,sugar,suite,sunny,super,surge,sweet,swept,swift,sword,swore,sworn,table,taste,teach,teeth,tempo,tense,terms,thick,third,thorn,three,threw,throw,thumb,tiger,tight,timer,tired,title,today,token,topic,total,touch,tough,towel,tower,track,trade,trail,train,trait,trash,treat,trend,trial,tribe,trick,tried,troop,trove,truck,truly,trump,trunk,trust,truth,tumor,tuner,ultra,uncle,under,union,until,upper,upset,urban,usual,utter,valid,value,video,vigor,viral,virus,visit,vista,vital,vivid,vocal,voice,waste,watch,water,weary,weave,wedge,weird,whale,wheat,wheel,where,while,white,whole,whose,wider,witch,woman,women,world,worry,worse,worst,worth,would,wound,wrist,write,wrote,yacht,yield,young,youth,strange,strong,stream,street,string,stripe,strategy,straight,struggle,stretch,strength,structure,stranger,strongly,stripped,stressed,strictly,striking,striving,studying,stumbled,stunning'.split(','));
+const isWord=w=>w.length>=3&&W.has(w.toLowerCase());
+const authMW=(req,res,next)=>{const t=req.headers.authorization?.split(' ')[1];if(!t)return res.status(401).json({error:'No token'});try{req.user=jwt.verify(t,JWT_SECRET);next();}catch{res.status(401).json({error:'Invalid token'});}};
+app.post('/auth/register',async(req,res)=>{
+  const{username,email,password}=req.body;
+  if(!username||!email||!password)return res.status(400).json({error:'All fields required'});
+  if(usersByEmail[email.toLowerCase()])return res.status(400).json({error:'Email already registered'});
+  if(usersByUsername[username.toLowerCase()])return res.status(400).json({error:'Username taken'});
+  if(username.length<2||username.length>20)return res.status(400).json({error:'Username must be 2-20 chars'});
+  const id=uuidv4(),hash=await bcrypt.hash(password,10);
+  users[id]={id,username,email:email.toLowerCase(),hash,elo:1000,wins:0,losses:0,games:0};
+  usersByEmail[email.toLowerCase()]=id;usersByUsername[username.toLowerCase()]=id;
+  const token=jwt.sign({id,username},JWT_SECRET,{expiresIn:'7d'});
+  res.json({token,user:{id,username,email:email.toLowerCase(),elo:1000,wins:0,losses:0}});
+});
+app.post('/auth/login',async(req,res)=>{
+  const{email,password}=req.body;
+  const u=users[usersByEmail[email?.toLowerCase()]];
+  if(!u||!await bcrypt.compare(password,u.hash))return res.status(401).json({error:'Invalid email or password'});
+  const token=jwt.sign({id:u.id,username:u.username},JWT_SECRET,{expiresIn:'7d'});
+  res.json({token,user:{id:u.id,username:u.username,email:u.email,elo:u.elo,wins:u.wins,losses:u.losses}});
+});
+app.get('/auth/me',authMW,(req,res)=>{
+  const u=users[req.user.id];
+  if(!u)return res.status(404).json({error:'Not found'});
+  res.json({id:u.id,username:u.username,email:u.email,elo:u.elo,wins:u.wins,losses:u.losses,gamesPlayed:u.games});
+});
+const mkRoom=(hostId,bot)=>{
+  const code=Math.random().toString(36).substring(2,8).toUpperCase();
+  const botId=bot?'bot-'+uuidv4():null;
+  const players=[];
+  rooms[code]={code,hostId,players,status:bot?'playing':'lobby',chain:[],turn:0,round:1,challenge:null,botId};
+  return{code,botId};
+};
+app.post('/rooms/create',authMW,(req,res)=>{
+  const{code}=mkRoom(req.user.id,false);
+  res.json({code});
+});
+app.post('/rooms/create-vs-bot',authMW,(req,res)=>{
+  const{code,botId}=mkRoom(req.user.id,true);
+  const r=rooms[code];
+  r.players.push({id:req.user.id,username:req.user.username,lives:4,out:false,isBot:false});
+  r.players.push({id:botId,username:'WordBot',lives:4,out:false,isBot:true});
+  res.json({code});
+});
+app.get('/rooms/:code',authMW,(req,res)=>{
+  const r=rooms[req.params.code.toUpperCase()];
+  if(!r)return res.status(404).json({error:'Room not found'});
+  res.json(pub(r));
+});
+app.post('/matchmaking/join',authMW,(req,res)=>{
+  const{id,username}=req.user;
+  if(!queue.find(p=>p.id===id))queue.push({id,username});
+  if(queue.length>=2){
+    const[a,b]=queue.splice(0,2);
+    const{code}=mkRoom(a.id,false);
+    const r=rooms[code];
+    [a,b].forEach(p=>{
+      r.players.push({id:p.id,username:p.username,lives:4,out:false,isBot:false});
+      const sid=userToSocket[p.id];
+      if(sid){const s=io.sockets.sockets.get(sid);if(s){s.join(code);s.emit('matchmaking:matched',{code});}}
+    });
+    io.to(code).emit('room:updated',pub(r));
+    return res.json({status:'matched',code});
+  }
+  res.json({status:'waiting'});
+});
+app.post('/matchmaking/leave',authMW,(req,res)=>{
+  const i=queue.findIndex(p=>p.id===req.user.id);
+  if(i>-1)queue.splice(i,1);
+  res.json({status:'left'});
+});
+app.get('/dictionary',authMW,(req,res)=>{
+  const w=req.query.word?.toLowerCase();
+  if(!w)return res.status(400).json({error:'No word'});
+  res.json({word:w,valid:isWord(w),definition:isWord(w)?`"${w}" is a valid English word.`:`"${w}" not found in dictionary.`});
+});
+app.get('/leaderboard',authMW,(req,res)=>{
+  res.json(Object.values(users).sort((a,b)=>b.elo-a.elo).slice(0,50).map((u,i)=>({rank:i+1,username:u.username,elo:u.elo,wins:u.wins,losses:u.losses,gamesPlayed:u.games})));
+});
 app.use(express.static(path.join(__dirname,'../client/build')));
-app.get('*',(req,res)=>{res.sendFile(path.join(__dirname,'../client/build/index.html'));});
-function sanitiseRoom(room){return{code:room.code,status:room.status,chain:room.chain,currentPlayerIndex:room.currentPlayerIndex,roundNumber:room.roundNumber,challengeActive:room.challengeActive,players:room.players.map(p=>({id:p.id,username:p.username,lives:p.lives,isEliminated:p.isEliminated,isSpectator:p.isSpectator}))};}
-function getActivePlayer(room){const active=room.players.filter(p=>!p.isEliminated);if(!active.length)return null;return active[room.currentPlayerIndex%active.length];}
-function advanceTurn(room){const active=room.players.filter(p=>!p.isEliminated);room.currentPlayerIndex=(room.currentPlayerIndex+1)%Math.max(active.length,1);}
-function checkWinner(room){const active=room.players.filter(p=>!p.isEliminated);if(active.length===1)return active[0];if(active.length===0)return room.players[room.players.length-1];return null;}
-function loseLife(room,playerId,reason,io){const player=room.players.find(p=>p.id===playerId);if(!player||player.isEliminated)return;player.lives=Math.max(0,player.lives-1);io.to(room.code).emit('game:life_lost',{playerId,livesRemaining:player.lives,reason});if(player.lives===0){player.isEliminated=true;player.isSpectator=true;io.to(room.code).emit('game:player_eliminated',{playerId,username:player.username});const user=users[playerId];if(user)user.losses++;}}
-function resetRound(room,io){room.chain=[];room.challengeActive=false;room.challengerId=null;room.challengedId=null;room.roundNumber++;advanceTurn(room);const winner=checkWinner(room);if(winner){room.status='finished';const user=users[winner.id];if(user){user.wins++;user.gamesPlayed++;user.elo=Math.min(3000,user.elo+25);}room.players.filter(p=>p.id!==winner.id&&!p.isSpectator).forEach(p=>{const u=users[p.id];if(u){u.gamesPlayed++;u.elo=Math.max(500,u.elo-10);}});io.to(room.code).emit('game:winner',{winnerId:winner.id,username:winner.username});}else{const next=getActivePlayer(room);io.to(room.code).emit('game:round_reset',{chain:[],roundNumber:room.roundNumber,currentPlayerId:next?.id});startTimer(room,io);}}
+app.get('*',(req,res)=>res.sendFile(path.join(__dirname,'../client/build/index.html')));
+const pub=r=>({code:r.code,status:r.status,chain:r.chain,currentPlayerIndex:r.turn%Math.max(r.players.filter(p=>!p.out).length,1),roundNumber:r.round,challengeActive:!!r.challenge,players:r.players.map(p=>({id:p.id,username:p.username,lives:p.lives,isEliminated:p.out,isSpectator:p.out,isBot:p.isBot}))});
+const active=r=>r.players.filter(p=>!p.out);
+const current=r=>{const a=active(r);return a.length?a[r.turn%a.length]:null;};
+const advance=r=>{const a=active(r);r.turn=(r.turn+1)%Math.max(a.length,1);};
+const winner=r=>{const a=active(r);return a.length===1?a[0]:a.length===0?r.players[r.players.length-1]:null;};
 const timers={};
-function startTimer(room,io){clearTimer(room.code);let secs=20;timers[room.code]=setInterval(()=>{secs--;io.to(room.code).emit('game:timer_tick',{secondsRemaining:secs});if(secs<=0){clearTimer(room.code);const active=getActivePlayer(room);if(active){loseLife(room,active.id,'Timer expired',io);resetRound(room,io);}}},1000);}
-function clearTimer(code){if(timers[code]){clearInterval(timers[code]);delete timers[code];}}
-io.use((socket,next)=>{const token=socket.handshake.auth.token;try{socket.user=jwt.verify(token,JWT_SECRET);next();}catch{next(new Error('Unauthorized'));}});
-io.on('connection',(socket)=>{
-  const userId=socket.user.id;
-  socketToUser[socket.id]=userId;
-  userToSocket[userId]=socket.id;
-  socket.on('room:join',({code})=>{const room=rooms[code?.toUpperCase()];if(!room)return socket.emit('error',{message:'Room not found'});if(room.status!=="lobby"&&!room.botId)return socket.emit("error",{message:"Game already started"});if(room.players.length>=12)return socket.emit('error',{message:'Room is full'});socket.join(room.code);if(!room.botId&&!room.players.find(p=>p.id===userId)){room.players.push({id:userId,username:socket.user.username,lives:4,isEliminated:false,isSpectator:false});}io.to(room.code).emit("room:updated",sanitiseRoom(room));socket.emit("room:joined",{code:room.code});if(room.botId&&room.status==="playing"){socket.emit("game:started",sanitiseRoom(room));const active=room.players.filter(p=>!p.isEliminated);const current=active[room.currentPlayerIndex%active.length];if(current&&current.isBot){scheduleBotTurn(room,io);}else{startTimer(room,io);}}if(room.botId&&room.status==="playing"){socket.emit("game:started",sanitiseRoom(room));const active=room.players.filter(p=>!p.isEliminated);const current=active[room.currentPlayerIndex%active.length];if(current&&current.isBot){scheduleBotTurn(room,io);}else{startTimer(room,io);}}});
-  socket.on('room:start',({code})=>{const room=rooms[code?.toUpperCase()];if(!room||room.hostId!==userId)return;if(room.players.length<2)return socket.emit('error',{message:'Need at least 2 players'});room.status='playing';io.to(room.code).emit('game:started',sanitiseRoom(room));startTimer(room,io);});
-  socket.on('game:add_letter',({code,letter})=>{const room=rooms[code?.toUpperCase()];if(!room||room.status!=='playing')return;if(room.challengeActive)return;const active=getActivePlayer(room);if(!active||active.id!==userId)return socket.emit('error',{message:'Not your turn'});const l=letter?.toUpperCase();if(!l||!/^[A-Z]$/.test(l))return socket.emit('error',{message:'Invalid letter'});const newChain=[...room.chain,l];const chainStr=newChain.join('').toLowerCase();if(newChain.length>=4&&isValidWord(chainStr)){room.chain=newChain;io.to(room.code).emit('game:letter_added',{letter:l,chain:newChain,playerId:userId});clearTimer(room.code);loseLife(room,userId,`Completed word "${chainStr}"`,io);setTimeout(()=>resetRound(room,io),1500);return;}if(newChain.length===3&&isValidWord(chainStr)){room.chain=newChain;io.to(room.code).emit('game:letter_added',{letter:l,chain:newChain,playerId:userId});io.to(room.code).emit('game:three_letter_word',{word:chainStr});clearTimer(room.code);setTimeout(()=>resetRound(room,io),1500);return;}room.chain=newChain;clearTimer(room.code);io.to(room.code).emit('game:letter_added',{letter:l,chain:newChain,playerId:userId});advanceTurn(room);const next=getActivePlayer(room);io.to(room.code).emit('game:turn_changed',{currentPlayerId:next?.id});if(next&&next.isBot){clearTimer(room.code);setTimeout(()=>scheduleBotTurn(room,io),800);}else{startTimer(room,io);}});
-  socket.on('game:challenge',({code})=>{const room=rooms[code?.toUpperCase()];if(!room||room.status!=='playing'||room.challengeActive)return;if(room.chain.length<2)return socket.emit('error',{message:'Challenge available after 2 letters'});const active=getActivePlayer(room);if(!active||active.id!==userId)return socket.emit('error',{message:'Not your turn'});const active2=room.players.filter(p=>!p.isEliminated);const prevIndex=((room.currentPlayerIndex%active2.length)-1+active2.length)%active2.length;const challenged=active2[prevIndex];if(!challenged)return;clearTimer(room.code);room.challengeActive=true;room.challengerId=userId;room.challengedId=challenged.id;io.to(room.code).emit('game:challenge_raised',{challengerId:userId,challengerName:socket.user.username,challengedId:challenged.id,challengedName:challenged.username,chain:room.chain});});
-  socket.on('game:submit_word',({code,word})=>{const room=rooms[code?.toUpperCase()];if(!room||!room.challengeActive)return;if(room.challengedId!==userId)return socket.emit('error',{message:'Only the challenged player can submit'});const w=word?.toLowerCase().trim();const chainStr=room.chain.join('').toLowerCase();const valid=w&&w.startsWith(chainStr)&&isValidWord(w);if(valid){io.to(room.code).emit('game:challenge_result',{result:'challenger_loses',word:w,loserId:room.challengerId});loseLife(room,room.challengerId,'Lost challenge',io);}else{io.to(room.code).emit('game:challenge_result',{result:'challenged_loses',word:w,loserId:room.challengedId});loseLife(room,room.challengedId,'Failed challenge',io);}setTimeout(()=>resetRound(room,io),2000);});
-  socket.on('game:react',({code,emoji})=>{const room=rooms[code?.toUpperCase()];if(!room)return;io.to(room.code).emit('game:reaction',{playerId:userId,username:socket.user.username,emoji});});
-  socket.on('room:leave',({code})=>{const room=rooms[code?.toUpperCase()];if(room){room.players=room.players.filter(p=>p.id!==userId);socket.leave(room.code);io.to(room.code).emit('room:updated',sanitiseRoom(room));}});
-  socket.on('disconnect',()=>{delete socketToUser[socket.id];delete userToSocket[userId];});
+const clearT=code=>{if(timers[code]){clearInterval(timers[code]);delete timers[code];}};
+const loseLife=(r,pid,io)=>{
+  const p=r.players.find(x=>x.id===pid);
+  if(!p||p.out)return;
+  p.lives=Math.max(0,p.lives-1);
+  io.to(r.code).emit('game:life_lost',{playerId:pid,livesRemaining:p.lives});
+  if(p.lives===0){
+    p.out=true;
+    io.to(r.code).emit('game:player_eliminated',{playerId:pid,username:p.username});
+    const u=users[pid];if(u)u.losses++;
+  }
+};
+const nextRound=(r,io)=>{
+  r.chain=[];r.challenge=null;r.round++;
+  advance(r);
+  const w=winner(r);
+  if(w){
+    r.status='finished';
+    const u=users[w.id];
+    if(u&&!w.isBot){u.wins++;u.games++;u.elo=Math.min(3000,u.elo+25);}
+    r.players.filter(p=>p.id!==w.id).forEach(p=>{const u=users[p.id];if(u){u.games++;u.elo=Math.max(500,u.elo-10);}});
+    io.to(r.code).emit('game:winner',{winnerId:w.id,username:w.username});
+  } else {
+    const nxt=current(r);
+    io.to(r.code).emit('game:round_reset',{chain:[],roundNumber:r.round,currentPlayerId:nxt?nxt.id:null});
+    if(nxt&&nxt.isBot)botTurn(r,io);else startT(r,io);
+  }
+};
+const startT=(r,io)=>{
+  clearT(r.code);
+  let s=20;
+  timers[r.code]=setInterval(()=>{
+    s--;
+    io.to(r.code).emit('game:timer_tick',{secondsRemaining:s});
+    if(s<=0){
+      clearT(r.code);
+      const c=current(r);
+      if(c&&!c.isBot){loseLife(r,c.id,io);nextRound(r,io);}
+    }
+  },1000);
+};
+const BOT=['strange','strong','stream','street','string','stripe','straw','storm','stone','store','stock','stick','steam','steal','stand','stall','stain','stage','spray','spring','split','spine','spell','speed','speak','space','smile','smell','small','slope','sleep','skill','shift','shelf','shell','shark','shade','serve','sense','scene','sauce','rough','round','route','royal','river','rider','ridge','right','react','realm','radio','raise','rally','range','rapid','reach','proud','prove','power','point','pilot','phone','phase','peace','pearl','nurse','north','noise','night','music','mouth','motor','mount','month','money','model','metal','merit','match','march','major','magic','lover','local','limit','level','legal','layer','laugh','laser','large','known','juice','joint','human','hotel','hobby','happy','guard','grove','group','grief','great','grave','grass','grape','grand','grain','grace','globe','glass','giant','funny','frost','fresh','fraud','frame','found','force','focus','floor','flesh','flame','fight','fever','fence','feast','false','fancy','faith','extra','exist','event','error','equal','entry','enjoy','enemy','empty','eight','cycle','curve','cruel','crown','crowd','cross','crime','cream','crash','craft','crack','cover','count','coral','coast','clone','close','cloth','cloud','clock','chess','chest','check','chaos','charm','chair','chain','catch','cable','burst','build','brush','broke','bring','break','bread','brave','brand','brain','bloom','blood','block','blend','blast','blank','blame','blade','black','bench','beach','badge','aware','audit','avoid','arena','anger','angel','alone','allow','alive','alert','alarm','agree','after','about'];
+const botLetter=chain=>{
+  const pre=chain.join('').toLowerCase();
+  const opts=BOT.filter(w=>w.startsWith(pre)&&w.length>pre.length);
+  if(opts.length){const w=opts[Math.floor(Math.random()*Math.min(opts.length,5))];return w[pre.length].toUpperCase();}
+  const any=Array.from(W).filter(w=>w.startsWith(pre)&&w.length>pre.length);
+  if(any.length){const w=any[Math.floor(Math.random()*Math.min(any.length,5))];return w[pre.length].toUpperCase();}
+  return null;
+};
+const botTurn=(r,io)=>{
+  setTimeout(()=>{
+    const rm=rooms[r.code];
+    if(!rm||rm.status!=='playing'||rm.challenge)return;
+    const c=current(rm);
+    if(!c||!c.isBot)return;
+    const letter=botLetter(rm.chain);
+    if(!letter){io.to(rm.code).emit('game:status',{message:'WordBot passes!'});nextRound(rm,io);return;}
+    const nc=[...rm.chain,letter];
+    const cs=nc.join('').toLowerCase();
+    rm.chain=nc;
+    io.to(rm.code).emit('game:letter_added',{letter,chain:nc,playerId:c.id});
+    if(nc.length>=4&&isWord(cs)){
+      clearT(rm.code);
+      loseLife(rm,c.id,io);
+      setTimeout(()=>nextRound(rm,io),1200);
+    } else if(nc.length===3&&isWord(cs)){
+      io.to(rm.code).emit('game:three_letter_word',{word:cs});
+      advance(rm);
+      const nxt=current(rm);
+      io.to(rm.code).emit('game:turn_changed',{currentPlayerId:nxt?nxt.id:null});
+      if(nxt&&nxt.isBot)botTurn(rm,io);else startT(rm,io);
+    } else {
+      advance(rm);
+      const nxt=current(rm);
+      io.to(rm.code).emit('game:turn_changed',{currentPlayerId:nxt?nxt.id:null});
+      if(nxt&&nxt.isBot)botTurn(rm,io);else startT(rm,io);
+    }
+  },1200+Math.random()*600);
+};
+io.use((socket,next)=>{
+  try{socket.user=jwt.verify(socket.handshake.auth.token,JWT_SECRET);next();}
+  catch{next(new Error('Unauthorized'));}
+});
+io.on('connection',socket=>{
+  const uid=socket.user.id;
+  userToSocket[uid]=socket.id;
+  socket.on('room:join',({code})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(!r)return socket.emit('error',{message:'Room not found'});
+    socket.join(r.code);
+    if(r.status==='lobby'&&!r.players.find(p=>p.id===uid)){
+      r.players.push({id:uid,username:socket.user.username,lives:4,out:false,isBot:false});
+    }
+    socket.emit('room:joined',{code:r.code});
+    io.to(r.code).emit('room:updated',pub(r));
+    if(r.botId&&r.status==='playing'){
+      socket.emit('game:started',pub(r));
+      const c=current(r);
+      if(c&&c.isBot)botTurn(r,io);else startT(r,io);
+    }
+  });
+  socket.on('room:start',({code})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(!r||r.hostId!==uid||r.players.length<2)return;
+    r.status='playing';
+    io.to(r.code).emit('game:started',pub(r));
+    startT(r,io);
+  });
+  socket.on('game:add_letter',({code,letter})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(!r||r.status!=='playing'||r.challenge)return;
+    const c=current(r);
+    if(!c||c.id!==uid)return socket.emit('error',{message:'Not your turn'});
+    const l=letter?.toUpperCase();
+    if(!l||!/^[A-Z]$/.test(l))return;
+    clearT(r.code);
+    const nc=[...r.chain,l];
+    const cs=nc.join('').toLowerCase();
+    r.chain=nc;
+    io.to(r.code).emit('game:letter_added',{letter:l,chain:nc,playerId:uid});
+    if(nc.length>=4&&isWord(cs)){
+      loseLife(r,uid,io);
+      setTimeout(()=>nextRound(r,io),1200);
+    } else if(nc.length===3&&isWord(cs)){
+      io.to(r.code).emit('game:three_letter_word',{word:cs});
+      advance(r);
+      const nxt=current(r);
+      io.to(r.code).emit('game:turn_changed',{currentPlayerId:nxt?nxt.id:null});
+      if(nxt&&nxt.isBot)botTurn(r,io);else startT(r,io);
+    } else {
+      advance(r);
+      const nxt=current(r);
+      io.to(r.code).emit('game:turn_changed',{currentPlayerId:nxt?nxt.id:null});
+      if(nxt&&nxt.isBot)botTurn(r,io);else startT(r,io);
+    }
+  });
+  socket.on('game:challenge',({code})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(!r||r.status!=='playing'||r.challenge||r.chain.length<2)return;
+    const c=current(r);
+    if(!c||c.id!==uid)return;
+    const a=active(r);
+    const pi=((r.turn%a.length)-1+a.length)%a.length;
+    const prev=a[pi];
+    if(!prev)return;
+    clearT(r.code);
+    r.challenge={challengerId:uid,challengedId:prev.id};
+    io.to(r.code).emit('game:challenge_raised',{challengerId:uid,challengerName:socket.user.username,challengedId:prev.id,challengedName:prev.username,chain:r.chain});
+  });
+  socket.on('game:submit_word',({code,word})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(!r||!r.challenge||r.challenge.challengedId!==uid)return;
+    const w=word?.toLowerCase().trim();
+    const pre=r.chain.join('').toLowerCase();
+    const valid=w&&w.startsWith(pre)&&isWord(w);
+    r.challenge=null;
+    if(valid){
+      io.to(r.code).emit('game:challenge_result',{result:'challenger_loses',word:w});
+      loseLife(r,r.challenge?.challengerId||uid,io);
+    } else {
+      io.to(r.code).emit('game:challenge_result',{result:'challenged_loses',word:w});
+      loseLife(r,uid,io);
+    }
+    setTimeout(()=>nextRound(r,io),1500);
+  });
+  socket.on('game:react',({code,emoji})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(r)io.to(r.code).emit('game:reaction',{playerId:uid,username:socket.user.username,emoji});
+  });
+  socket.on('room:leave',({code})=>{
+    const r=rooms[code?.toUpperCase()];
+    if(r){r.players=r.players.filter(p=>p.id!==uid);socket.leave(r.code);io.to(r.code).emit('room:updated',pub(r));}
+  });
+  socket.on('disconnect',()=>delete userToSocket[uid]);
 });
 server.listen(PORT,()=>console.log(`Word Game server running on port ${PORT}`));
-
-const matchmakingQueue = [];
-const MATCH_SIZE = 2;
-
-app.post('/matchmaking/join', authMiddleware, (req, res) => {
-  const userId = req.user.id;
-  if (!matchmakingQueue.find(p => p.id === userId)) {
-    matchmakingQueue.push({ id: userId, username: req.user.username });
-  }
-  if (matchmakingQueue.length >= MATCH_SIZE) {
-    const players = matchmakingQueue.splice(0, MATCH_SIZE);
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-    rooms[code] = {
-      code, hostId: players[0].id, players: [], status: 'lobby',
-      chain: [], currentPlayerIndex: 0, roundNumber: 1,
-      challengeActive: false, challengerId: null, challengedId: null
-    };
-    players.forEach(p => {
-      rooms[code].players.push({ id: p.id, username: p.username, lives: 4, isEliminated: false, isSpectator: false });
-      const sockId = userToSocket[p.id];
-      if (sockId) {
-        const sock = io.sockets.sockets.get(sockId);
-        if (sock) { sock.join(code); sock.emit('matchmaking:matched', { code }); }
-      }
-    });
-    io.to(code).emit('room:updated', sanitiseRoom(rooms[code]));
-    res.json({ status: 'matched', code });
-  } else {
-    res.json({ status: 'waiting' });
-  }
-});
-
-app.post('/matchmaking/leave', authMiddleware, (req, res) => {
-  const idx = matchmakingQueue.findIndex(p => p.id === req.user.id);
-  if (idx > -1) matchmakingQueue.splice(idx, 1);
-  res.json({ status: 'left' });
-});
-
-const BOT_WORDS = ['strange','strong','stream','street','string','stripe','strategy','strip','straw','storm','stone','store','stock','stick','steam','steal','steak','stand','stall','stain','stage','stack','spray','spread','spring','sprint','split','spine','spell','speed','speak','space','solar','solid','smile','smell','small','slope','sleep','slate','skill','since','sight','shift','shelf','shell','shark','shade','serve','sense','scene','sauce','saint','sadly','ruler','rough','round','route','royal','river','rider','ridge','rifle','right','react','realm','radar','radio','raise','rally','range','rapid','ratio','reach','proud','prove','prose','proof','probe','press','power','point','pilot','phone','phase','penny','peace','pearl','panel','paint','outer','order','orbit','offer','occur','nurse','novel','north','noise','noble','night','music','mouth','mouse','motor','mount','moral','month','money','model','metal','merit','mercy','mayor','match','march','major','magic','lying','lunar','lucid','lover','local','liver','limit','level','legal','layer','laugh','laser','large','label','known','knife','knock','karma','juice','judge','joint','jewel','japan','ivory','issue','input','inner','index','image','human','humor','hotel','hobby','holly','hinge','herbs','hence','heavy','heart','haven','harsh','happy','habit','gusto','guide','guard','grove','group','gross','groan','grief','greet','green','great','grave','grass','grasp','grape','grant','grand','grain','grade','grace','gloss','globe','glass','giant','ghost','funny','fully','frost','front','fresh','fraud','frank','frame','found','force','focus','flour','flock','flesh','flame','fifty','fight','fifth','fever','fence','feast','false','fancy','faith','extra','exist','event','essay','error','equal','entry','enter','enjoy','enemy','empty','email','eight','eager','dying','drove','drink','drift','dress','drawn','drank','drama','drain','draft','dizzy','dirty','devil','depth','depot','delay','debut','death','daily','cycle','curve','cruel','crown','crowd','cross','crime','cream','crazy','crash','craft','crack','cover','court','count','coral','comic','coast','coach','clone','close','cloth','cloud','clock','cling','climb','cliff','clerk','clear','clean','clash','claim','civic','chose','choir','china','chest','chess','cheer','cheek','check','chaos','charm','chalk','chair','chain','cease','cause','catch','cargo','canal','camel','cable','buyer','burst','bunch','built','build','brush','brook','broke','broad','bring','brief','bride','break','bread','brave','brand','brake','brain','boxer','booth','boost','bloom','blood','block','blind','bless','blend','bleed','blast','blank','bland','blame','blade','black','birth','bible','bench','below','being','begin','began','beach','badly','badge','awful','aware','award','awake','audit','audio','attic','atlas','asset','arise','arena','apply','apart','annoy','annex','ankle','angry','angle','anger','angel','alter','along','alone','allow','alley','alive','alike','align','alert','alien','album','alarm','ahead','agree','agent','after','again','about'];
-
-function getBotMove(chain) {
-  const prefix = chain.join('').toLowerCase();
-  const valid = BOT_WORDS.filter(w => w.startsWith(prefix) && w.length > prefix.length);
-  if (!valid.length) return null;
-  const word = valid[Math.floor(Math.random() * Math.min(valid.length, 5))];
-  return word[prefix.length].toUpperCase();
-}
-
-app.post('/rooms/create-vs-bot', authMiddleware, (req, res) => {
-  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-  const botId = 'bot-' + uuidv4();
-  rooms[code] = {
-    code, hostId: req.user.id,
-    players: [
-      { id: req.user.id, username: req.user.username, lives: 4, isEliminated: false, isSpectator: false },
-      { id: botId, username: 'WordBot', lives: 4, isEliminated: false, isSpectator: false, isBot: true }
-    ],
-    status: 'playing', chain: [], currentPlayerIndex: 0, roundNumber: 1,
-    challengeActive: false, challengerId: null, challengedId: null, botId
-  };
-  res.json({ code, botId });
-});
-
-function scheduleBotTurn(room, io) {
-  const active = room.players.filter(p => !p.isEliminated);
-  const current = active[room.currentPlayerIndex % active.length];
-  if (!current || !current.isBot) return;
-  setTimeout(() => {
-    if (!rooms[room.code] || rooms[room.code].status !== 'playing') return;
-    if (room.challengeActive) return;
-    const move = getBotMove(room.chain);
-    if (!move) {
-      io.to(room.code).emit('game:status', { message: 'WordBot cannot continue — new round!' });
-      resetRound(room, io);
-      return;
-    }
-    const newChain = [...room.chain, move];
-    const chainStr = newChain.join('').toLowerCase();
-    if (newChain.length >= 4 && isValidWord(chainStr)) {
-      room.chain = newChain;
-      io.to(room.code).emit('game:letter_added', { letter: move, chain: newChain, playerId: current.id });
-      loseLife(room, current.id, `Completed word "${chainStr}"`, io);
-      setTimeout(() => { resetRound(room, io); scheduleBotTurn(room, io); }, 1500);
-      return;
-    }
-    if (newChain.length === 3 && isValidWord(chainStr)) {
-      room.chain = newChain;
-      io.to(room.code).emit('game:letter_added', { letter: move, chain: newChain, playerId: current.id });
-      io.to(room.code).emit('game:three_letter_word', { word: chainStr });
-      setTimeout(() => { resetRound(room, io); scheduleBotTurn(room, io); }, 1500);
-      return;
-    }
-    room.chain = newChain;
-    io.to(room.code).emit('game:letter_added', { letter: move, chain: newChain, playerId: current.id });
-    advanceTurn(room);
-    const next = active[room.currentPlayerIndex % active.length];
-    io.to(room.code).emit('game:turn_changed', { currentPlayerId: next?.id });
-    startTimer(room, io);
-    scheduleBotTurn(room, io);
-  }, 1500 + Math.random() * 1000);
-}
