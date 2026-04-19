@@ -43,8 +43,8 @@ export default function GamePage({ code, onLeave }) {
     socket.on('game:player_eliminated',({playerId,username}) => { setStatus(`${username} has been eliminated!`); setRoom(r => r?{...r,players:r.players.map(p=>p.id===playerId?{...p,isEliminated:true,isSpectator:true}:p)}:r); });
     socket.on('game:challenge_raised',(info) => { setChallengeInfo(info); setStatus(`${info.challengerName} challenges ${info.challengedName}!`); setShowChallenge(info.challengedId===user.id); });
     socket.on('game:challenge_result',({result,word}) => { setChallengeInfo(null); setShowChallenge(false); setStatus(result==='challenger_loses'?`Challenge failed! "${word}" is valid.`:`Challenge succeeded! "${word}" not valid.`); });
-    socket.on('game:three_letter_word',({word}) => setStatus(`"${word}" — 3-letter word! Safe. New round…`));
-    socket.on('game:round_reset',({chain:c,roundNumber,currentPlayerId}) => { setChain([]); setLetter(''); setChallengeInfo(null); setShowChallenge(false); setStatus(`Round ${roundNumber}`); if(currentPlayerId===user.id) setTimeout(()=>inputRef.current?.focus(),200); });
+    socket.on('game:three_letter_word',({word}) => { setStatus(`"${word}" — 3-letter word! Safe, play continues.`); });
+    socket.on('game:round_reset',({chain:c,roundNumber,currentPlayerId}) => { setChain(c||[]); setLetter(''); setChallengeInfo(null); setShowChallenge(false); setStatus(`Round ${roundNumber}`); if(currentPlayerId===user.id) setTimeout(()=>inputRef.current?.focus(),200); });
     socket.on('game:winner',({winnerId,username}) => setGameOver({winnerId,username,isMe:winnerId===user.id}));
     socket.on('game:reaction',addReaction);
     socket.on('error',(e) => { setError(e.message); setTimeout(()=>setError(''),3000); });
