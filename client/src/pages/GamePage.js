@@ -18,6 +18,8 @@ export default function GamePage({ code, onLeave }) {
   const [challengeInfo, setChallengeInfo] = useState(null);
   const [gameOver, setGameOver] = useState(null);
   const [error, setError] = useState('');
+  const [wordCard, setWordCard] = useState(null);
+  const [oopsFlash, setOopsFlash] = useState(false);
   const inputRef = useRef(null);
   const socket = getSocket(token);
   const myPlayer = room?.players?.find(p => p.id===user.id) || (room ? {id:user.id,lives:4,isEliminated:false,isSpectator:false} : null);
@@ -31,11 +33,20 @@ export default function GamePage({ code, onLeave }) {
     setReactions(r => [...r,{...data,id}]);
     setTimeout(() => setReactions(r => r.filter(x => x.id!==id)),2200);
   },[]);
+  const showWordCard = (word, type, definition) => {
+    if (type === 'penalty') {
+      setOopsFlash(true);
+      setTimeout(() => setOopsFlash(false), 1000);
+    }
+    setWordCard({ word, type, definition: definition || 'A valid English word.' });
+    setTimeout(() => setWordCard(null), type === 'penalty' ? 5000 : 3500);
+  };
+
   useEffect(() => {
     socket.emit('room:join',{code});
     socket.on('room:updated',(r) => { setRoom(r); setChain(r.chain||[]); });
-    socket.on('game:started',(r) => { setRoom(r); setChain([]); setStatus('Game started!'); });
-    socket.on('game:letter_added',({letter:l,chain:c,playerId}) => { setChain(c); const p=room?.players?.find(pl=>pl.id===playerId); setStatus(`${p?.username||'Player'} added "${l}"`); });
+    socket.on('game:started',(r) => { setRoom(r); setChain(r.chain&&r.chain.length?r.chain:[]); setStatus('Game started!'); syncCurrentPlayer(r); });
+    socket.on('game:letter_added',({letter:l,chain:nc,playerId,username:pname}) => { setChain(nc); setRoom(r=>{if(r){const p=r.players.find(pl=>pl.id===playerId);setStatus((p?.username||pname||'WordBot')+' added "'+l+'"');}return r;}); });
     socket.on('game:turn_changed',({currentPlayerId}) => { if(currentPlayerId===user.id){setStatus('Your turn!'); setTimeout(()=>inputRef.current?.focus(),100);} });
     socket.on('game:timer_tick',({secondsRemaining}) => setTimer(secondsRemaining));
     socket.on('game:timer_expired',({playerId}) => { const p=room?.players?.find(pl=>pl.id===playerId); setStatus(`${p?.username||'Player'} ran out of time!`); });
@@ -43,7 +54,11 @@ export default function GamePage({ code, onLeave }) {
     socket.on('game:player_eliminated',({playerId,username}) => { setStatus(`${username} has been eliminated!`); setRoom(r => r?{...r,players:r.players.map(p=>p.id===playerId?{...p,isEliminated:true,isSpectator:true}:p)}:r); });
     socket.on('game:challenge_raised',(info) => { setChallengeInfo(info); setStatus(`${info.challengerName} challenges ${info.challengedName}!`); setShowChallenge(info.challengedId===user.id); });
     socket.on('game:challenge_result',({result,word}) => { setChallengeInfo(null); setShowChallenge(false); setStatus(result==='challenger_loses'?`Challenge failed! "${word}" is valid.`:`Challenge succeeded! "${word}" not valid.`); });
-    socket.on('game:three_letter_word',({word}) => { setStatus(`"${word}" — 3-letter word! Safe, play continues.`); });
+    socket.on('game:word_completed', ({ word, definition, penalty }) => {
+      showWordCard(word, penalty ? 'penalty' : 'safe', definition);
+    });
+    socket.on('game:word_completed',({word,definition,penalty}) => { showWordCard(word,penalty?'penalty':'safe',definition); });
+    socket.on('game:three_letter_word',({word,definition}) => { showWordCard(word,'safe',definition); setStatus('"'+word+'" — safe 3-letter word! Play continues.'); });
     socket.on('game:round_reset',({chain:c,roundNumber,currentPlayerId}) => { setChain(c||[]); setLetter(''); setChallengeInfo(null); setShowChallenge(false); setStatus(`Round ${roundNumber}`); if(currentPlayerId===user.id) setTimeout(()=>inputRef.current?.focus(),200); });
     socket.on('game:winner',({winnerId,username}) => setGameOver({winnerId,username,isMe:winnerId===user.id}));
     socket.on('game:reaction',addReaction);
